@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:find_your_leo/screens/home/widgets/case_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'model/images_model.dart';
@@ -22,23 +23,10 @@ class FakeImageRepository implements ImageRepository {
       final random = Random();
       List<Widget> images = new List();
       for (var i = 0; i < nbImage; i++) {
-        var id = random.nextInt(8) + 1;
-
-        images.add(
-          GestureDetector(
-            onTap: () => print('test'),
-            child: ColorFiltered(
-              child: Image.asset(
-                'assets/images/$id.jpg',
-                fit: BoxFit.cover,
-              ),
-              colorFilter: ColorFilter.mode(
-                Colors.transparent,
-                BlendMode.color,
-              ),
-            ),
-          ),
-        );
+        images.add(CaseWidget(
+          id: random.nextInt(8) + 1,
+          size: imageWidth,
+        ));
       }
       return new ImagesModel(images, axisCount);
     });
