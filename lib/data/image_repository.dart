@@ -13,25 +13,32 @@ class FakeImageRepository implements ImageRepository {
   @override
   Future<ImagesModel> fetchImages(Size size, int nbImage) {
     return Future.delayed(Duration(milliseconds: 500), () {
-      var area = size.width * size.height - kToolbarHeight - 200;
+      var area = size.width * (size.height - kToolbarHeight);
       var imageArea = area / nbImage;
       var imageWidth = sqrt(imageArea);
-      print((size.width / imageWidth));
       int axisCount = (size.width / imageWidth).round() + 1;
-      print(axisCount);
-      print(nbImage / axisCount);
+      nbImage += axisCount - (nbImage % axisCount);
 
       final random = Random();
       List<Widget> images = new List();
       for (var i = 0; i < nbImage; i++) {
         var id = random.nextInt(8) + 1;
-        images.add(ColorFiltered(
-          child: Image.asset('assets/images/$id.jpg'),
-          colorFilter: ColorFilter.mode(
-            Colors.transparent,
-            BlendMode.color,
+
+        images.add(
+          GestureDetector(
+            onTap: () => print('test'),
+            child: ColorFiltered(
+              child: Image.asset(
+                'assets/images/$id.jpg',
+                fit: BoxFit.cover,
+              ),
+              colorFilter: ColorFilter.mode(
+                Colors.transparent,
+                BlendMode.color,
+              ),
+            ),
           ),
-        ));
+        );
       }
       return new ImagesModel(images, axisCount);
     });

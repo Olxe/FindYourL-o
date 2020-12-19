@@ -2,6 +2,7 @@ import 'package:find_your_leo/cubit/images_cubit.dart';
 import 'package:find_your_leo/data/model/images_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:photo_view/photo_view.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,13 +13,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
   Widget build(BuildContext context) {
     final imagesCubit = BlocProvider.of<ImagesCubit>(context);
-    imagesCubit.getImages(MediaQuery.of(context).size, 500);
+    imagesCubit.getImages(MediaQuery.of(context).size, 20);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('FindYourLéo'),
@@ -41,18 +42,34 @@ class _HomeScreenState extends State<HomeScreen> {
     return InteractiveViewer(
       minScale: 1,
       maxScale: 15,
-      child: AbsorbPointer(
-        child: Container(
-          color: Colors.grey[900],
-          alignment: Alignment.centerRight,
-          padding: EdgeInsets.all(2.0),
-          child: GridView.count(
-            shrinkWrap: true,
-            crossAxisCount: images.axisCount,
-            crossAxisSpacing: 1,
-            mainAxisSpacing: 1,
-            children: images.images,
-          ),
+      child: Container(
+        color: Colors.grey[900],
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.all(2.0),
+        child: GridView.count(
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          crossAxisCount: images.axisCount,
+          crossAxisSpacing: 1,
+          mainAxisSpacing: 1,
+          children: images.images,
+        ),
+      ),
+    );
+  }
+
+  Widget buildPhotoView(ImagesModel images) {
+    return PhotoView.customChild(
+      child: Container(
+        color: Colors.grey[900],
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.all(2.0),
+        child: GridView.count(
+          shrinkWrap: true,
+          crossAxisCount: images.axisCount,
+          crossAxisSpacing: 1,
+          mainAxisSpacing: 1,
+          children: images.images,
         ),
       ),
     );
