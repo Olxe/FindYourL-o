@@ -8,9 +8,16 @@ class ImagesInitial extends ImagesState {}
 class ImagesLoading extends ImagesState {}
 
 class ImagesLoaded extends ImagesState {
-  final ImagesModel images;
+  final CasesModel images;
 
   ImagesLoaded(this.images);
+}
+
+class WinState extends ImagesState {
+  final Image image;
+  final MemoryImage quote;
+
+  WinState(this.image, this.quote);
 }
 
 class ImagesError extends ImagesState {

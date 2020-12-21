@@ -1,17 +1,22 @@
-import 'package:find_your_leo/cubit/images_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:find_your_leo/cubit/images_cubit.dart';
+
 class CaseWidget extends StatefulWidget {
   final Image image;
+  final MemoryImage bytes;
   final double iconSize;
   final bool soluce;
+  final String quote;
 
   const CaseWidget({
     Key key,
     @required this.image,
     @required this.iconSize,
     @required this.soluce,
+    this.quote,
+    this.bytes,
   }) : super(key: key);
 
   @override
@@ -24,36 +29,26 @@ class _CaseWidgetState extends State<CaseWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if(!widget.soluce) {
+        if (!widget.soluce) {
           setState(() {
             selected = !selected;
           });
-        }
-        else {
-          print('test');
+        } else {
           final imagesCubit = BlocProvider.of<ImagesCubit>(context);
-          // imagesCubit.
+          imagesCubit.onWin(
+              Image(
+                image: widget.bytes,
+                fit: BoxFit.cover,
+              ),
+              widget.bytes);
         }
       },
-      child: Stack(
-        children: [
-          ColorFiltered(
-            child: widget.image,
-            colorFilter: ColorFilter.mode(
-              !selected ? Colors.transparent : Colors.red[100],
-              BlendMode.color,
-            ),
-          ),
-          selected
-              ? Center(
-                  child: Icon(
-                    Icons.highlight_off,
-                    size: widget.iconSize / 1.4,
-                    color: Colors.red,
-                  ),
-                )
-              : SizedBox.shrink(),
-        ],
+      child: ColorFiltered(
+        child: widget.image,
+        colorFilter: ColorFilter.mode(
+          !selected ? Colors.transparent : Colors.red[200],
+          BlendMode.color,
+        ),
       ),
     );
   }

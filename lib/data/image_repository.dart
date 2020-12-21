@@ -5,19 +5,19 @@ import 'dart:math';
 import 'package:find_your_leo/screens/home/widgets/case_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'model/images_model.dart';
+import 'model/cases_model.dart';
 import 'model/level_model.dart';
 
 const server = 'http://10.0.2.2:4000/';
 
 abstract class ImageRepository {
-  Future<ImagesModel> fetchImages(Size size);
+  Future<CasesModel> fetchCases(Size size);
 }
 
 class FakeImageRepository implements ImageRepository {
   @override
-  Future<ImagesModel> fetchImages(Size size) async {
-    List<Level> levelsData = await fetchLevelsData('test');
+  Future<CasesModel> fetchCases(Size size) async {
+    List<Level> levelsData = await fetchLevelsData('test1');
     Level level = await fetchCurrentLevel(levelsData, 1);
     CaseWidget caseToFind = await fetchCaseToFind(level.path);
 
@@ -25,7 +25,7 @@ class FakeImageRepository implements ImageRepository {
     var imageArea = area / level.amount;
     var imageWidth = sqrt(imageArea);
 
-    return Future.delayed(Duration(milliseconds: 500), () {
+    return Future.delayed(Duration.zero, () {
       int axisCount = (size.width / imageWidth).round() + 1;
       level.amount += axisCount - (level.amount % axisCount);
 
@@ -43,9 +43,9 @@ class FakeImageRepository implements ImageRepository {
           CaseWidget(
             image: Image.asset(
               path + '$id.jpg',
-              fit: BoxFit.cover,
-              width: 1048,
-              height: 1048,
+              fit: BoxFit.fill,
+              width: 512,
+              height: 512,
             ),
             iconSize: imageWidth,
             soluce: false,
@@ -56,13 +56,13 @@ class FakeImageRepository implements ImageRepository {
       int indexToReplace = random.nextInt(images.length);
       images[indexToReplace] = caseToFind;
 
-      return new ImagesModel(images, axisCount);
+      return new CasesModel(images, axisCount);
     });
   }
 
   Future<List<Level>> fetchLevelsData(String levelCode) async {
     final res = await http
-        .get(server + 'data/' + levelCode)
+        .get(server + 'data/' + levelCode.toUpperCase())
         .timeout(const Duration(seconds: 5));
 
     if (res.statusCode == 200) {
@@ -100,11 +100,13 @@ class FakeImageRepository implements ImageRepository {
         image: Image(
           image: bytes,
           fit: BoxFit.fill,
-          width: 1048,
-          height: 1048,
+          width: 512,
+          height: 512,
         ),
         iconSize: 0,
         soluce: true,
+        bytes: bytes,
+        quote: 'Léo',
       );
     }
 

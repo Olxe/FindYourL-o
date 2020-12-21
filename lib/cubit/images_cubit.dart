@@ -1,11 +1,11 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:find_your_leo/data/image_repository.dart';
-import 'package:find_your_leo/data/model/images_model.dart';
+import 'package:find_your_leo/data/model/cases_model.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:http/http.dart' as http;
 
 part 'images_state.dart';
 
@@ -14,11 +14,18 @@ class ImagesCubit extends Cubit<ImagesState> {
 
   ImagesCubit(this._imageRepository) : super(ImagesInitial());
 
-  Future<void> getImages(Size size) async {
-    emit(ImagesLoading());
+  Future<void> getCases(Size size) async {
+    try {
+      emit(ImagesLoading());
+      final cases = await _imageRepository.fetchCases(size);
+      emit(ImagesLoaded(cases));
+    }
+    on TimeoutException {
+      emit(ImagesError('Impossible de se connecter au serveur.'));
+    }
+  }
 
-    final images = await _imageRepository.fetchImages(size);
-
-    emit(ImagesLoaded(images));
+  Future<void> onWin(Image image, MemoryImage quote) async {
+    emit(WinState(image, quote));
   }
 }

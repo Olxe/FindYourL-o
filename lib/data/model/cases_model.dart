@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class ImagesModel{
+class CasesModel{
   final List<Widget> images;
   final int axisCount;
 
-  ImagesModel(this.images, this.axisCount);
+  CasesModel(this.images, this.axisCount);
 }
