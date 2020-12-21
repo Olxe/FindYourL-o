@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     final imagesCubit = BlocProvider.of<ImagesCubit>(context);
-    imagesCubit.getImages(MediaQuery.of(context).size, 1000);
+    imagesCubit.getImages(MediaQuery.of(context).size);
 
     return Scaffold(
       appBar: AppBar(
