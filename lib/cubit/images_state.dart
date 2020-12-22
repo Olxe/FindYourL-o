@@ -13,11 +13,19 @@ class ImagesLoaded extends ImagesState {
   ImagesLoaded(this.images);
 }
 
+class FinishState extends ImagesState {}
+
 class WinState extends ImagesState {
   final Image image;
-  final MemoryImage quote;
+  final MemoryImage memoryImage;
 
-  WinState(this.image, this.quote);
+  WinState(this.image, this.memoryImage);
+}
+
+class DataLoadedState extends ImagesState {
+  final List<Level> levelsdata;
+
+  DataLoadedState(this.levelsdata);
 }
 
 class ImagesError extends ImagesState {

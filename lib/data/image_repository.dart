@@ -8,17 +8,17 @@ import 'package:http/http.dart' as http;
 import 'model/cases_model.dart';
 import 'model/level_model.dart';
 
-const server = 'http://10.0.2.2:4000/';
+const server = 'http://192.168.1.57:4000/';
 
 abstract class ImageRepository {
-  Future<CasesModel> fetchCases(Size size);
+  Future<CasesModel> fetchCases(Size size, Level level);
+  Future<List<Level>> fetchLevelsData(String levelCode);
 }
 
 class FakeImageRepository implements ImageRepository {
+
   @override
-  Future<CasesModel> fetchCases(Size size) async {
-    List<Level> levelsData = await fetchLevelsData('test1');
-    Level level = await fetchCurrentLevel(levelsData, 1);
+  Future<CasesModel> fetchCases(Size size, Level level) async {
     CaseWidget caseToFind = await fetchCaseToFind(level.path);
 
     var area = size.width * (size.height - kToolbarHeight);
@@ -72,10 +72,13 @@ class FakeImageRepository implements ImageRepository {
       for (var level in data['levels']) {
         levels.add(Level.fromJson(level));
       }
+      if(levels.isEmpty) {
+        throw NetworkException("Code invalide !");
+      }
       return levels;
     }
 
-    throw "HTTP error: " + res.statusCode.toString();
+    throw NetworkException("Code invalide !");
   }
 
   Future<Level> fetchCurrentLevel(List<Level> levelsData, int levelId) async {
@@ -85,7 +88,7 @@ class FakeImageRepository implements ImageRepository {
       }
     }
 
-    throw "Level id incorrect: " + levelId.toString();
+    throw NetworkException("Level id incorrect: " + levelId.toString());
   }
 
   Future<CaseWidget> fetchCaseToFind(String path) async {
@@ -118,18 +121,3 @@ class NetworkException implements Exception {
   final String message;
   NetworkException(this.message);
 }
-
-// class MyImageRepository implements ImageRepository {
-//   @override
-//   Future<List<ImageModel>> fetchImages() {
-//     var completer = new Completer<List<ImageModel>>();
-
-//     List<ImageModel> images = new List();
-//     for (var i = 0; i < 8; i++) {
-//       images.add(new ImageModel(Image.asset('assets/images/1.jpg')));
-//     }
-//     completer.complete(images);
-
-//     return completer.future;
-//   }
-// }

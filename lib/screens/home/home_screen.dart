@@ -3,10 +3,15 @@ import 'dart:async';
 import 'package:find_your_leo/constants.dart';
 import 'package:find_your_leo/cubit/images_cubit.dart';
 import 'package:find_your_leo/data/model/cases_model.dart';
+import 'package:find_your_leo/data/model/level_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
+  final List<Level> levels;
+
+  const HomeScreen({Key key, this.levels}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -16,18 +21,30 @@ class _HomeScreenState extends State<HomeScreen> {
   Timer _timer;
   bool _visible = true;
 
+  Level getCurrentLevel(int id) {
+    for (Level level in widget.levels) {
+      if (level.id == id) {
+        return level;
+      }
+    }
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
 
     final imagesCubit = BlocProvider.of<ImagesCubit>(context);
-    imagesCubit.getCases(Size(deviceWidth, deviceHeight));
+    imagesCubit.getCases(
+        Size(deviceWidth, deviceHeight), getCurrentLevel(_levelId));
   }
 
   @override
   void dispose() {
     super.dispose();
-    _timer.cancel();
+    if (_timer != null) {
+      _timer.cancel();
+    }
   }
 
   @override
@@ -37,6 +54,17 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text('FindYourFriend'),
         centerTitle: true,
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: 10),
+            child: Center(
+              child: Text(
+                '$_levelId / ${widget.levels.length}',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ),
+        ],
       ),
       body: BlocConsumer<ImagesCubit, ImagesState>(
         builder: (context, state) {
@@ -65,6 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Scaffold.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
+          } else if (state is FinishState) {
+            Navigator.pop(context);
           }
         },
       ),
@@ -118,7 +148,8 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 _levelId++;
                 final imagesCubit = BlocProvider.of<ImagesCubit>(context);
-                imagesCubit.getCases(MediaQuery.of(context).size);
+                imagesCubit.getCases(
+                    MediaQuery.of(context).size, getCurrentLevel(_levelId));
               },
               child: Text(
                 'Suivant',
