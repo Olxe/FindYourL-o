@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:find_your_leo/Tools.dart';
-import 'package:find_your_leo/constants.dart';
 import 'package:find_your_leo/data/model/level_model.dart';
 
 import 'MyDropDownWidget.dart';
@@ -26,7 +25,8 @@ class MyCardWidget extends StatefulWidget {
   _MyCardWidgetState createState() => _MyCardWidgetState();
 }
 
-class _MyCardWidgetState extends State<MyCardWidget> {
+class _MyCardWidgetState extends State<MyCardWidget>
+    with AutomaticKeepAliveClientMixin<MyCardWidget> {
   final picker = ImagePicker();
   Image _image;
   // File _image;
@@ -43,6 +43,12 @@ class _MyCardWidgetState extends State<MyCardWidget> {
     });
   }
 
+  @override
+  void initState() {
+    super.initState();
+    setImage(widget.level.base64Image);
+  }
+
   void setImage(String base64Encode) {
     widget.level.base64Image = base64Encode;
     if (widget.level.base64Image != null) {
@@ -54,6 +60,7 @@ class _MyCardWidgetState extends State<MyCardWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       margin: const EdgeInsets.all(8.0),
       child: Card(
@@ -65,11 +72,11 @@ class _MyCardWidgetState extends State<MyCardWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Nombres d\'images: ',
+                  'Nombre d\'images: ',
                   style: TextStyle(fontSize: 15),
                 ),
                 SizedBox(width: 10),
-                MyDropDownWidget(dropdownValue: widget.level.amount),
+                MyDropDownWidget(levelModel: widget.level),
               ],
             ),
             Stack(
@@ -90,13 +97,19 @@ class _MyCardWidgetState extends State<MyCardWidget> {
                     ? Positioned(
                         top: 0,
                         right: 0,
-                        child: MyIconButtonWidget(
-                          icon: Icons.clear,
-                          function: () {
-                            setState(() {
-                              setImage(null);
-                            });
-                          },
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: new IconButton(
+                              icon: Icon(
+                                Icons.cancel,
+                                size: 32,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  setImage(null);
+                                });
+                              }),
                         ),
                       )
                     : SizedBox.shrink(),
@@ -111,15 +124,24 @@ class _MyCardWidgetState extends State<MyCardWidget> {
                     size: 30,
                   ),
                   onPressed: () {
-                    Tools.showAlertDialog(
+                    if (widget.level.base64Image != null) {
+                      Tools.showAlertDialog(
                         context,
                         'Supprimer un niveau ?',
                         'Le niveau ${widget.level.id} sera supprimé.',
-                        () => widget.onDelete(widget.level.id - 1));
+                        () => Navigator.of(context).pop(),
+                        () {
+                          Navigator.of(context).pop();
+                          widget.onDelete(widget.level.id - 1);
+                        },
+                      );
+                    } else {
+                      widget.onDelete(widget.level.id - 1);
+                    }
                   },
                 ),
                 Text(
-                  'Level ${widget.level.id}',
+                  'Niveau ${widget.level.id}',
                   style: TextStyle(fontSize: 25),
                 ),
               ],
@@ -129,4 +151,7 @@ class _MyCardWidgetState extends State<MyCardWidget> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

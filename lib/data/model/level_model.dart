@@ -39,8 +39,22 @@ class LevelModel {
     this.amount,
   });
 
+factory LevelModel.fromJson(Map<String, dynamic> json) {
+    return LevelModel(
+      id: int.parse(json['id'].toString()),
+      amount: int.parse(json['amount'].toString()),
+      base64Image: json['base64Image'].toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': this.id,
+    'amount': this.amount,
+    'base64Image': this.base64Image,
+  };
+
   @override
   String toString() {
-    return '{$id}';
+    return '{$id, $amount, ${base64Image.substring(1, 10)}}';
   }
 }

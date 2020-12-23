@@ -1,12 +1,13 @@
+import 'package:find_your_leo/data/model/level_model.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class MyDropDownWidget extends StatefulWidget {
-  int dropdownValue;
+  LevelModel levelModel;
 
   MyDropDownWidget({
     Key key,
-    this.dropdownValue,
+    this.levelModel,
   }) : super(key: key);
 
   @override
@@ -17,7 +18,7 @@ class _MyDropDownWidgetState extends State<MyDropDownWidget> {
   @override
   Widget build(BuildContext context) {
     return DropdownButton<int>(
-      value: widget.dropdownValue,
+      value: widget.levelModel.amount,
       icon: Icon(Icons.arrow_downward),
       iconSize: 24,
       elevation: 16,
@@ -28,7 +29,7 @@ class _MyDropDownWidgetState extends State<MyDropDownWidget> {
       ),
       onChanged: (int newValue) {
         setState(() {
-          widget.dropdownValue = newValue;
+          widget.levelModel.amount = newValue;
         });
       },
       items: <int>[50, 100, 200, 300, 400, 600, 800, 1000]

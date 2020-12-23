@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 
 class Tools {
-  static Future<void> showAlertDialog(BuildContext context, String title,
-      String content, Function onYes) async {
+
+  static Future<bool> showAlertDialog(BuildContext context, String title,
+      String content, Function onNo, Function onYes) async {
 // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("Annuler"),
       onPressed: () {
-        Navigator.of(context).pop();
+        if (onNo != null) {
+          onNo();
+        }
       },
     );
     Widget continueButton = FlatButton(
       child: Text("Continuer"),
       onPressed: () {
-        Navigator.of(context).pop();
-        onYes();
+        if (onYes != null) {
+          onYes();
+        }
       },
     );
     // set up the AlertDialog
@@ -27,11 +31,42 @@ class Tools {
       ],
     );
     // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
+    return showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        ) ??
+        false;
+  }
+
+  static Future<bool> showAlertDialogWithOneButton(BuildContext context, String title,
+      String content, Function onOk) async {
+// set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        if (onOk != null) {
+          onOk();
+        }
       },
     );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(title),
+      content: Text(content),
+      actions: [
+        cancelButton,
+      ],
+    );
+    // show the dialog
+    return showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        ) ??
+        false;
   }
 }
