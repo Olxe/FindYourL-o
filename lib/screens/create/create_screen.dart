@@ -9,19 +9,20 @@ class CreateScreen extends StatefulWidget {
 }
 
 class _CreateScreenState extends State<CreateScreen> {
-  List<Level> levels = [];
-
-  List<MyCardWidget> cards = [];
+  List<LevelModel> levels = [];
 
   @override
   void initState() {
     super.initState();
-    cards.add(MyCardWidget(onDelete: onCardDeleted, index: cards.length, levelId: cards.length + 1));
+    levels.add(LevelModel(id: 1, amount: 100));
   }
 
   void onCardDeleted(int index) {
     setState(() {
-      cards.removeAt(index);
+      levels.removeAt(index);
+      for(int i = 0; i < levels.length; i++) {
+        levels[i].id = i + 1;
+      }
     });
   }
 
@@ -29,13 +30,12 @@ class _CreateScreenState extends State<CreateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Création d\'un nouveau salon'),
+        title: Text('Création d\'une nouvelle partie'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            cards.add(
-                MyCardWidget(onDelete: onCardDeleted, index: cards.length, levelId: cards.length + 1));
+            levels.add(LevelModel(id: levels.length + 1, amount: 100));
           });
         },
         heroTag: 'niv0',
@@ -45,13 +45,13 @@ class _CreateScreenState extends State<CreateScreen> {
       body: ListView.builder(
         scrollDirection: Axis.vertical,
         itemBuilder: (context, index) {
-          if (index == cards.length - 1) {
+          if (index == levels.length - 1) {
             return buildLastCard();
           } else {
-            return cards[index];
+            return MyCardWidget(onDelete: onCardDeleted, level: levels[index]);
           }
         },
-        itemCount: cards.length,
+        itemCount: levels.length,
       ),
     );
   }
@@ -59,7 +59,7 @@ class _CreateScreenState extends State<CreateScreen> {
   Widget buildLastCard() {
     return Column(
       children: [
-        cards[cards.length - 1],
+        MyCardWidget(onDelete: onCardDeleted, level: levels[levels.length - 1]),
         Container(
           margin: const EdgeInsets.symmetric(vertical: 20),
           child: RaisedButton(

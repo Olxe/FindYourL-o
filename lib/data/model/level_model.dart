@@ -27,3 +27,20 @@ class Level {
     return '{ $id, $amount, $path}';
   }
 }
+
+class LevelModel {
+  int id;
+  String base64Image;
+  int amount;
+
+  LevelModel({
+    this.base64Image,
+    this.id,
+    this.amount,
+  });
+
+  @override
+  String toString() {
+    return '{$id}';
+  }
+}

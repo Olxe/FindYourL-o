@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:find_your_leo/Tools.dart';
 import 'package:find_your_leo/constants.dart';
+import 'package:find_your_leo/data/model/level_model.dart';
 
 import 'MyDropDownWidget.dart';
 import 'MyIconButtonWidget.dart';
@@ -12,14 +14,12 @@ import 'MyIconButtonWidget.dart';
 // ignore: must_be_immutable
 class MyCardWidget extends StatefulWidget {
   final Function onDelete;
-  final int index;
-  int levelId;
+  final LevelModel level;
 
   MyCardWidget({
     Key key,
     @required this.onDelete,
-    @required this.index,
-    @required this.levelId,
+    @required this.level,
   }) : super(key: key);
 
   @override
@@ -28,18 +28,28 @@ class MyCardWidget extends StatefulWidget {
 
 class _MyCardWidgetState extends State<MyCardWidget> {
   final picker = ImagePicker();
-  File _image;
-  int dropDownValue = 100;
+  Image _image;
+  // File _image;
 
   Future<void> getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     setState(() {
       if (pickedFile != null) {
-        _image = File(pickedFile.path);
+        final bytes = File(pickedFile.path).readAsBytesSync();
+        setImage(base64Encode(bytes));
       } else {
         print('No image selected');
       }
     });
+  }
+
+  void setImage(String base64Encode) {
+    widget.level.base64Image = base64Encode;
+    if (widget.level.base64Image != null) {
+      _image = Image.memory(base64Decode(widget.level.base64Image));
+    } else {
+      _image = null;
+    }
   }
 
   @override
@@ -50,7 +60,6 @@ class _MyCardWidgetState extends State<MyCardWidget> {
         elevation: 2.0,
         clipBehavior: Clip.antiAlias,
         child: Column(
-          // mainAxisSize: MainAxisSize.max,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -60,43 +69,32 @@ class _MyCardWidgetState extends State<MyCardWidget> {
                   style: TextStyle(fontSize: 15),
                 ),
                 SizedBox(width: 10),
-                MyDropDownWidget(),
+                MyDropDownWidget(dropdownValue: widget.level.amount),
               ],
             ),
             Stack(
               children: [
-                Container(
-                  height: deviceHeight / 1.5,
-                  width: deviceWidth,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                  child: Card(
-                    child: _image == null
-                        ? Center(
-                            child: RaisedButton(
-                              onPressed: getImage,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.blue)),
-                              child: Text(
-                                'Ajouter une image',
-                                style: TextStyle(fontSize: 24),
-                              ),
-                            ),
-                          )
-                        : Image.file(_image, fit: BoxFit.cover),
-                    clipBehavior: Clip.antiAlias,
-                  ),
-                ),
+                _image == null
+                    ? RaisedButton(
+                        onPressed: getImage,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.blue)),
+                        child: Text(
+                          'Ajouter une image',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      )
+                    : Card(child: _image),
                 _image != null
                     ? Positioned(
-                        top: 35,
+                        top: 0,
                         right: 0,
                         child: MyIconButtonWidget(
                           icon: Icons.clear,
                           function: () {
                             setState(() {
-                              _image = null;
+                              setImage(null);
                             });
                           },
                         ),
@@ -116,12 +114,12 @@ class _MyCardWidgetState extends State<MyCardWidget> {
                     Tools.showAlertDialog(
                         context,
                         'Supprimer un niveau ?',
-                        'Le niveau ${widget.index + 1} sera supprimé.',
-                        () => widget.onDelete(widget.index));
+                        'Le niveau ${widget.level.id} sera supprimé.',
+                        () => widget.onDelete(widget.level.id - 1));
                   },
                 ),
                 Text(
-                  'Level ${widget.levelId}',
+                  'Level ${widget.level.id}',
                   style: TextStyle(fontSize: 25),
                 ),
               ],
