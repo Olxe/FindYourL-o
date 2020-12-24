@@ -2,13 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:find_your_leo/constants.dart';
 import 'package:find_your_leo/screens/home/widgets/case_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'model/cases_model.dart';
 import 'model/level_model.dart';
-
-const server = 'http://192.168.1.57:4000/';
 
 abstract class ImageRepository {
   Future<CasesModel> fetchCases(Size size, Level level);
@@ -16,7 +15,6 @@ abstract class ImageRepository {
 }
 
 class FakeImageRepository implements ImageRepository {
-
   @override
   Future<CasesModel> fetchCases(Size size, Level level) async {
     CaseWidget caseToFind = await fetchCaseToFind(level.path);
@@ -62,7 +60,7 @@ class FakeImageRepository implements ImageRepository {
 
   Future<List<Level>> fetchLevelsData(String levelCode) async {
     final res = await http
-        .get(server + 'data/' + levelCode.toUpperCase())
+        .get(kServer + 'data/' + levelCode.toUpperCase())
         .timeout(const Duration(seconds: 5));
 
     if (res.statusCode == 200) {
@@ -94,7 +92,7 @@ class FakeImageRepository implements ImageRepository {
 
   Future<CaseWidget> fetchCaseToFind(String path) async {
     final res = await http
-        .get(server + 'file/' + path)
+        .get(kServer + 'file/' + path)
         .timeout(const Duration(seconds: 5));
 
     if (res.statusCode == 200) {

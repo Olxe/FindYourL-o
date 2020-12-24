@@ -39,7 +39,7 @@ class LevelModel {
     this.amount,
   });
 
-factory LevelModel.fromJson(Map<String, dynamic> json) {
+  factory LevelModel.fromJson(Map<String, dynamic> json) {
     return LevelModel(
       id: int.parse(json['id'].toString()),
       amount: int.parse(json['amount'].toString()),
@@ -48,10 +48,10 @@ factory LevelModel.fromJson(Map<String, dynamic> json) {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': this.id,
-    'amount': this.amount,
-    'base64Image': this.base64Image,
-  };
+        'id': this.id,
+        'amount': this.amount,
+        'base64Image': this.base64Image,
+      };
 
   @override
   String toString() {

@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
-        title: Text('FindYourFriend'),
+        title: Text('Find The Compromise'),
         centerTitle: true,
         actions: [
           Container(
