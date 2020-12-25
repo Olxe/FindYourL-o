@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:find_your_leo/constants.dart';
-import 'package:find_your_leo/screens/home/widgets/case_widget.dart';
+import 'package:find_your_leo/screens/game/widgets/case_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'model/cases_model.dart';
