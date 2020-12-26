@@ -19,7 +19,7 @@ class RoomCubit extends Cubit<RoomState> {
       emit(RoomLoading());
       String code = await _roomRepository.createRoom(levels);
       emit(RoomLoaded(code));
-    } on NetworkException catch (e) {
+    } on MyException catch (e) {
       emit(RoomError(message: e.message));
     }
   }

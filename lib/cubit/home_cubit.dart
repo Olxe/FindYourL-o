@@ -16,7 +16,7 @@ class HomeCubit extends Cubit<HomeState> {
       emit(HomeLoading());
       List<LevelModel> room = await _roomRepository.fetchRoom(code);
       emit(HomeLoaded(room));
-    } on HomeException catch (e) {
+    } on MyException catch (e) {
       emit(HomeError(message: e.message));
     }
   }

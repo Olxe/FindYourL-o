@@ -2,7 +2,6 @@ import 'package:find_your_leo/constants.dart';
 import 'package:find_your_leo/cubit/home_cubit.dart';
 import 'package:find_your_leo/cubit/images_cubit.dart';
 import 'package:find_your_leo/cubit/room_cubit.dart';
-import 'package:find_your_leo/data/image_repository.dart';
 import 'package:find_your_leo/data/room_repository.dart';
 import 'package:find_your_leo/screens/create/create_screen.dart';
 import 'package:find_your_leo/screens/game/game_screen.dart';
@@ -38,7 +37,7 @@ class _StartScreenState extends State<HomeScreen> {
           } else if (state is HomeLoading) {
             return buildLoading();
           } else if (state is HomeLoaded) {
-            return buildLoading();
+            return buildInitialScreen();
           } else {
             return buildInitialScreen();
           }
@@ -49,13 +48,12 @@ class _StartScreenState extends State<HomeScreen> {
               SnackBar(content: Text(state.message)),
             );
           } else if (state is HomeLoaded) {
-            print('HomeLoaded');
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) {
                   return BlocProvider(
-                    create: (context) => ImagesCubit(FakeImageRepository()),
+                    create: (context) => ImagesCubit(RoomRepository()),
                     child: GameScreen(levels: state.levels),
                   );
                 },
@@ -113,9 +111,14 @@ class _StartScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget buildLoading() {
-    return Center(
-      child: CircularProgressIndicator(),
+   Widget buildLoading() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: Colors.grey,
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 

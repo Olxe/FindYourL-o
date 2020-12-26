@@ -5,7 +5,6 @@ import 'package:find_your_leo/cubit/images_cubit.dart';
 
 class CaseWidget extends StatefulWidget {
   final Image image;
-  final MemoryImage bytes;
   final double iconSize;
   final bool soluce;
   final String quote;
@@ -16,7 +15,6 @@ class CaseWidget extends StatefulWidget {
     @required this.iconSize,
     @required this.soluce,
     this.quote,
-    this.bytes,
   }) : super(key: key);
 
   @override
@@ -35,12 +33,7 @@ class _CaseWidgetState extends State<CaseWidget> {
           });
         } else {
           final imagesCubit = BlocProvider.of<ImagesCubit>(context);
-          imagesCubit.onWin(
-              Image(
-                image: widget.bytes,
-                fit: BoxFit.cover,
-              ),
-              widget.bytes);
+          imagesCubit.onWin(widget.image);
         }
       },
       child: ColorFiltered(
