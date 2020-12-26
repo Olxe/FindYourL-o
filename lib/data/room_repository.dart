@@ -24,7 +24,6 @@ class RoomRepository {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
       return response.body;
     }
 
@@ -74,10 +73,10 @@ class RoomRepository {
       final random = Random();
       List<Widget> images = new List();
       for (var i = 0; i < level.amount; i++) {
-        int id = random.nextInt(15) + 1;
+        int id = random.nextInt(20) + 1;
         String path = 'assets/images/persons/';
 
-        if (random.nextInt(3) == 0) {
+        if (random.nextInt(2) == 0) {
           path = 'assets/images/random/';
         }
 

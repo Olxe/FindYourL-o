@@ -32,7 +32,7 @@ class _MyDropDownWidgetState extends State<MyDropDownWidget> {
           widget.levelModel.amount = newValue;
         });
       },
-      items: <int>[50, 100, 200, 300, 400, 600, 800, 1000]
+      items: <int>[10, 50, 100, 200, 400, 600, 800, 1000]
           .map<DropdownMenuItem<int>>((int value) {
         return DropdownMenuItem<int>(
           value: value,

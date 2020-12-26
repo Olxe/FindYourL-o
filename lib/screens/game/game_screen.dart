@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:find_your_leo/Tools.dart';
 import 'package:find_your_leo/constants.dart';
 import 'package:find_your_leo/cubit/images_cubit.dart';
 import 'package:find_your_leo/data/model/cases_model.dart';
@@ -19,6 +18,8 @@ class GameScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<GameScreen> {
   int _currentLevel = 1;
+  Timer timer;
+  bool visible = true;
 
   @override
   void initState() {
@@ -26,6 +27,14 @@ class _HomeScreenState extends State<GameScreen> {
 
     final myCubit = BlocProvider.of<ImagesCubit>(context);
     myCubit.getCases(Size(deviceWidth, deviceHeight), getLevel(_currentLevel));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (timer != null) {
+      timer.cancel();
+    }
   }
 
   @override
@@ -37,8 +46,16 @@ class _HomeScreenState extends State<GameScreen> {
         } else if (state is ImagesLoading) {
           return buildScaffold(buildLoading());
         } else if (state is ImagesLoaded) {
+          if (visible) {
+            timer = new Timer(const Duration(milliseconds: 2000), () {
+              setState(() {
+                visible = false;
+              });
+            });
+          }
           return buildScaffold(buildGridView(state.images));
         } else if (state is WinState) {
+          visible = true;
           return buildScaffold(buildSoluce(state.image));
         } else {
           return buildScaffold(buildLoading());
@@ -93,6 +110,7 @@ class _HomeScreenState extends State<GameScreen> {
                   crossAxisCount: images.axisCount,
                   children: images.images,
                 ),
+                visible ? buildLoading() : SizedBox.shrink(),
               ],
             ),
           ),
