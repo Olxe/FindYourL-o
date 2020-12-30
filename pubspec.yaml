@@ -30,6 +30,7 @@ dependencies:
   flutter_bloc: ^6.1.1
   http: ^0.12.2
   image_picker: ^0.6.7+17
+  shared_preferences: ^0.5.12+4
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +50,7 @@ flutter:
   assets:
     - assets/images/random/
     - assets/images/persons/
+    - assets/images/app/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

@@ -5,8 +5,10 @@ import 'package:find_your_leo/cubit/room_cubit.dart';
 import 'package:find_your_leo/data/room_repository.dart';
 import 'package:find_your_leo/screens/create/create_screen.dart';
 import 'package:find_your_leo/screens/game/game_screen.dart';
+import 'package:find_your_leo/screens/home/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -15,6 +17,31 @@ class HomeScreen extends StatefulWidget {
 
 class _StartScreenState extends State<HomeScreen> {
   var textController = TextEditingController()..text = "ATADH";
+
+  Future<List<String>> _getRoomPref() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    if (pref.getStringList("find_the_compromise_room") == null) {
+      return [];
+    }
+    print(pref.getStringList("find_the_compromise_room"));
+    return pref.getStringList("find_the_compromise_room");
+  }
+
+  Future<void> _saveToRoomPref(String code) async {
+    if (code == null) return;
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+
+    Set<String> allCodes =
+        pref.getStringList("find_the_compromise_room")?.toSet() ?? {};
+
+    allCodes = {code, ...allCodes};
+
+    pref.setStringList("find_the_compromise_room", allCodes.toList());
+  }
+
+  void onTileTaped(String code) {
+    submitSearchingRoom(context, code);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +53,14 @@ class _StartScreenState extends State<HomeScreen> {
 
   Scaffold buildScaffold() {
     return Scaffold(
+      backgroundColor: Colors.grey,
       appBar: AppBar(
         title: Text('Find The Compromise'),
         centerTitle: true,
+      ),
+      drawer: CustomDrawer(
+        futurePref: _getRoomPref(),
+        onTap: onTileTaped,
       ),
       body: BlocConsumer<HomeCubit, HomeState>(
         builder: (context, state) {
@@ -48,6 +80,8 @@ class _StartScreenState extends State<HomeScreen> {
               SnackBar(content: Text(state.message)),
             );
           } else if (state is HomeLoaded) {
+            _saveToRoomPref(textController.text);
+            _getRoomPref();
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -111,7 +145,7 @@ class _StartScreenState extends State<HomeScreen> {
     );
   }
 
-   Widget buildLoading() {
+  Widget buildLoading() {
     return Container(
       width: double.infinity,
       height: double.infinity,
