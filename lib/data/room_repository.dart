@@ -3,9 +3,11 @@ import 'dart:math';
 import 'package:find_your_leo/data/model/level_model.dart';
 import 'package:find_your_leo/screens/game/widgets/case_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
 
 import 'package:http/http.dart' as http;
 
+import '../Tools.dart';
 import 'model/cases_model.dart';
 
 class RoomRepository {
@@ -31,18 +33,21 @@ class RoomRepository {
         "Une erreur est survenue lors de la création de la salle.");
   }
 
-  Future<List<LevelModel>> fetchRoom(String code) async {
+  Future<List<GameLevel>> fetchRoom(BuildContext context, String code) async {
     final response = await http.get(baseURL + '/rooms/' + code);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final rest = data["levels"] as List;
 
-      List<LevelModel> levels =
-          rest.map((json) => LevelModel.fromJson(json)).toList();
+      List<GameLevel> levels =
+          rest.map((json) => GameLevel.fromJson(json)).toList();
 
       if (levels.isEmpty) {
         throw MyException("Le code saisi n'existe pas !");
       }
+
+      await Future.wait(
+          levels.map((e) => Tools.cacheImage(context, e.link)).toList());
 
       return levels;
     }
@@ -51,11 +56,15 @@ class RoomRepository {
         "Une erreur est survenue, impossible de rejoindre cette partie.");
   }
 
-  Future<CasesModel> fetchCases(Size size, LevelModel level) async {
+  Future<void> loadData() async {}
 
+  Future<CasesModel> fetchCases(Size size, GameLevel level) async {
     CaseWidget caseToFind = CaseWidget(
-      image: Image.memory(
-        base64Decode(level.base64Image),
+      image: Image(
+        image: AdvancedNetworkImage(
+          level.link,
+          useDiskCache: true,
+        ),
         fit: BoxFit.cover,
       ),
       iconSize: 512,
@@ -72,6 +81,7 @@ class RoomRepository {
 
       final random = Random();
       List<Widget> images = new List();
+      
       for (var i = 0; i < level.amount; i++) {
         int id = random.nextInt(20) + 1;
         String path = 'assets/images/persons/';
@@ -85,8 +95,6 @@ class RoomRepository {
             image: Image.asset(
               path + '$id.jpg',
               fit: BoxFit.cover,
-              width: 512,
-              height: 512,
             ),
             iconSize: imageWidth,
             soluce: false,

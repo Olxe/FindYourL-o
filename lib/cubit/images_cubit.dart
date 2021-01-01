@@ -15,7 +15,7 @@ class ImagesCubit extends Cubit<ImagesState> {
 
   ImagesCubit(this._roomRepository) : super(ImagesLoading());
 
-  Future<void> getCases(Size size, LevelModel currentLevel) async {
+  Future<void> getCases(Size size, GameLevel currentLevel) async {
     if (currentLevel == null) {
       emit(ImagesError(
           "Une erreur est survenue. Impossible de charger le niveau."));

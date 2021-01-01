@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
 
 class Tools {
-
   static Future<bool> showAlertDialog(BuildContext context, String title,
       String content, Function onNo, Function onYes) async {
 // set up the buttons
@@ -40,8 +40,8 @@ class Tools {
         false;
   }
 
-  static Future<bool> showAlertDialogWithOneButton(BuildContext context, String title,
-      String content, Function onOk) async {
+  static Future<bool> showAlertDialogWithOneButton(
+      BuildContext context, String title, String content, Function onOk) async {
 // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("OK"),
@@ -69,4 +69,14 @@ class Tools {
         ) ??
         false;
   }
+
+  static Future<void> cacheImage(BuildContext context, String urlImage) =>
+      precacheImage(
+        AdvancedNetworkImage(
+          urlImage,
+          useDiskCache: true,
+          cacheRule: CacheRule(maxAge: const Duration(days: 7)),
+        ),
+        context,
+      );
 }

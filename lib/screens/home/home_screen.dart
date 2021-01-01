@@ -16,7 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<HomeScreen> {
-  var textController = TextEditingController()..text = "ATADH";
+  var textController = TextEditingController();
 
   Future<List<String>> _getRoomPref() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
@@ -176,6 +176,6 @@ class _StartScreenState extends State<HomeScreen> {
 
   void submitSearchingRoom(BuildContext context, String value) {
     final myCubit = BlocProvider.of<HomeCubit>(context);
-    myCubit.getRoom(value);
+    myCubit.getRoom(context, value);
   }
 }

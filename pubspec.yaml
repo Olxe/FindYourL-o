@@ -26,11 +26,16 @@ dependencies:
   bloc: ^6.1.1
   cached_network_image: ^2.4.1
   cupertino_icons: ^1.0.0
+  dio: ^3.0.10
   equatable: ^1.2.5
+  flutter_advanced_networkimage: ^0.7.0
   flutter_bloc: ^6.1.1
   http: ^0.12.2
   image_picker: ^0.6.7+17
   shared_preferences: ^0.5.12+4
+
+dependency_overrides:
+  flutter_svg: ^0.18.0
 
 dev_dependencies:
   flutter_test:

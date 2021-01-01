@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GameScreen extends StatefulWidget {
-  final List<LevelModel> levels;
+  final List<GameLevel> levels;
 
   const GameScreen({Key key, this.levels}) : super(key: key);
 
@@ -167,7 +167,7 @@ class _HomeScreenState extends State<GameScreen> {
     );
   }
 
-  LevelModel getLevel(int levelIndex) {
+  GameLevel getLevel(int levelIndex) {
     for (var level in widget.levels) {
       if (level.id == levelIndex) {
         return level;

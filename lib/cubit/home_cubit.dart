@@ -11,10 +11,10 @@ class HomeCubit extends Cubit<HomeState> {
 
   HomeCubit(this._roomRepository) : super(HomeInitial());
 
-  Future<void> getRoom(String code) async {
+  Future<void> getRoom(BuildContext context, String code) async {
     try {
       emit(HomeLoading());
-      List<LevelModel> room = await _roomRepository.fetchRoom(code);
+      List<GameLevel> room = await _roomRepository.fetchRoom(context, code);
       emit(HomeLoaded(room));
     } on MyException catch (e) {
       emit(HomeError(message: e.message));

@@ -12,7 +12,7 @@ class HomeInitial extends HomeState {}
 class HomeLoading extends HomeState {}
 
 class HomeLoaded extends HomeState {
-  final List<LevelModel> levels;
+  final List<GameLevel> levels;
   HomeLoaded(
     this.levels,
   );

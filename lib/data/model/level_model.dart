@@ -1,3 +1,34 @@
+class GameLevel {
+  int id;
+  String link;
+  int amount;
+
+  GameLevel({
+    this.link,
+    this.id,
+    this.amount,
+  });
+
+  factory GameLevel.fromJson(Map<String, dynamic> json) {
+    return GameLevel(
+      id: json['id'] as int,
+      amount: json['amount'] as int,
+      link: json['link'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': this.id,
+        'amount': this.amount,
+        'link': this.link,
+      };
+
+  @override
+  String toString() {
+    return '{$id, $amount, $link}';
+  }
+}
+
 class LevelModel {
   int id;
   String base64Image;
